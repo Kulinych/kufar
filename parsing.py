@@ -14,12 +14,8 @@ options.add_argument('--headless')
 options.add_argument('--no-sandbox')
 options.add_argument('--disable-dev-shm-usage')
 wd = webdriver.Chrome(options=options)
-wd.get("https://kufar.by/l")
+wd.get(f"https://www.kufar.by/l?ot=1&query={keysearch}&rgn=all&utm_search=Query%20only")
 wd.implicitly_wait(20)
-
-search_input = wd.find_element(By.CSS_SELECTOR, '.styles_input_rightIcon__vrNqG')
-search_input.send_keys(f"{keysearch} + '\ue007'")
-time.sleep(9)
 
 soup = bs(wd.page_source, "html.parser")
 soupfind = soup.find("a", class_="styles_wrapper__pb4qU")
