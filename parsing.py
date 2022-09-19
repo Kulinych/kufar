@@ -32,7 +32,8 @@ link = soupfind["href"]
 names = soup.find("h3", class_="styles_title__wj__Y")
 price = soup.find("p", class_="styles_price__x_wGw")
 #file = names.text +  price.text + link
-file = f'Обьявление: {names.text}, Цена: {price.text}, Ссылка: {link}'
+
+file = f'Объявление: {names.text}, Цена: {price.text}, Ссылка: {link}'
 
 url = f"https://api.telegram.org/bot{TOKEN}/sendMessage?chat_id={chat_id}&text={file}"
 
