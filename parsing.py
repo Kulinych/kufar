@@ -27,10 +27,10 @@ wd.implicitly_wait(20)
 
 
 soup = bs(wd.page_source, "html.parser")
-soupfind = soup.find("a", class_="styles_wrapper__2ZGa_")
+soupfind = soup.find("a", class_="styles_wrapper__pb4qU")
 link = soupfind["href"]
 names = soup.find("h3")
-price = soup.find("p", class_="styles_price__Bdda5")
+price = soup.find("p", class_="styles_price__x_wGw")
 wd.close()
 file = f'Объявление: {names.text}, Цена: {price.text}, Ссылка: {link}'
 
