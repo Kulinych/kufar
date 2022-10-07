@@ -31,13 +31,15 @@ soupfind = soup.find("a", class_="styles_wrapper__pb4qU")
 link = soupfind["href"]
 names = soup.find("h3")
 price = soup.find("p", class_="styles_price__x_wGw")
+img_url = soup.find("img", class_="styles_image--blur__6MsOZ lazyload")["data-src"]
 wd.close()
 file = f'Объявление: {names.text}, Цена: {price.text}, Ссылка: {link}'
 
 url = f"https://api.telegram.org/bot{TOKEN}/sendMessage?chat_id={chat_id}&text={file}"
+photo = f'https://api.telegram.org/bot{TOKEN}/sendPhoto?chat_id={chat_id}&caption={file}&photo={img_url}'
 
 if t != file:
-    requests.post(url)
+    requests.post(photo)
     with open('./test.txt', 'w') as f:
       f.write(file)
 #print(file)
