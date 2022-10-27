@@ -38,6 +38,8 @@ price = soup.find("p", class_="styles_price__x_wGw")
 
 soup_photo = bs(wd.page_source, "html.parser")
 soup_find_all_photo = soup_photo.findAll("img", class_="styles_slide__image__lc2v_")
+description = soup_photo.find("h2", class_="styles_description__title__H_4cK").next_sibling.text
+
 for photo in soup_find_all_photo:
     if photo["src"] not in photos:
         photos.append(photo["src"])
@@ -52,7 +54,7 @@ if vip != None:
 
 for number, url in enumerate(photos):
     if number == 0:
-      media_group.append(InputMediaPhoto(media=url, caption=file))
+      media_group.append(InputMediaPhoto(media=url, caption=file + ", Описание: " + description))
     media_group.append(InputMediaPhoto(media=url))
 
 url = f"https://api.telegram.org/bot{TOKEN}/sendMessage?chat_id={chat_id}&text={file}"
