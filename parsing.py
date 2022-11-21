@@ -1,6 +1,5 @@
 #!/usr/bin/python3
 from bs4 import BeautifulSoup as bs
-#import requests
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from argparse import ArgumentParser  
@@ -25,12 +24,12 @@ media_group = []
 bot = telegram.Bot(token=a.TOKEN)
 
 try:
-  f = open('./test.txt', 'r')
+  f = open('/data/test.txt', 'r')
 except:
-  f = open('./test.txt', 'x')
+  f = open('/data/test.txt', 'x')
   f.close()
 finally:
-  f = open('./test.txt', 'r')
+  f = open('/data/test.txt', 'r')
   t = f.read()
 options = webdriver.ChromeOptions()
 options.add_argument('--headless')
@@ -43,19 +42,20 @@ wd.implicitly_wait(20)
 
 def get_photo(link):
   photo_link = []
+  description = 'Описание не найдено'
   wd.get(link)
   try:
     soup_photo = bs(wd.page_source, "html.parser")
-    soup_find_all_photo = soup_photo.findAll("img", class_="styles_slide__image__lc2v_")
-    description = soup_photo.find("h2", class_="styles_description__title__H_4cK").next_sibling.text
-    if len(description) > 900:
-      description = description[:900]
+    soup_find_all_photo = soup_photo.findAll("img", class_="styles_slide__image__lc2v_", limit=9) 
     for photo in soup_find_all_photo:
       if photo["src"] not in photo_link:
-          photo_link.append(photo["src"])
+        photo_link.append(photo["src"])
+    description = soup_photo.find("h2", class_="styles_description__title__H_4cK").next_sibling.text
+    if len(description) > 870:
+      description = description[:870] 
   except:
-    pass        
-  return photo_link, description
+    pass
+  return photo_link, description       
  
 soup = bs(wd.page_source, "html.parser")
 soupfind = soup.find("a", class_="styles_wrapper__pb4qU")
@@ -70,7 +70,8 @@ if vip != None:
     vip = vip.find("img")["alt"]
     file = f'{vip} Объявление: {names.text}, Цена: {price.text}, Ссылка: {link}'
 
-for number, url in enumerate(get_photo(link)[0]):
+if get_photo(link) != None: 
+  for number, url in enumerate(get_photo(link)[0]):
     if number == 0:
       media_group.append(InputMediaPhoto(media=url, caption=file + ", Описание: " + get_photo(link)[1]))
     media_group.append(InputMediaPhoto(media=url))
@@ -80,8 +81,9 @@ url = f"https://api.telegram.org/bot{TOKEN}/sendMessage?chat_id={chat_id}&text={
 #photo = f'https://api.telegram.org/bot{TOKEN}/sendPhoto?chat_id={chat_id}&caption={file}&photo={img_url}'
 
 if t != file:
-    bot.send_media_group(chat_id=chat_id, media=media_group)
-    #requests.post(url)
     with open('./test.txt', 'w') as f:
       f.write(file)
       f.close()
+    if len(media_group) != 0:
+      bot.send_media_group(chat_id=chat_id, media=media_group)  
+    else: bot.send_message(text=file, chat_id=chat_id)
