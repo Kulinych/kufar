@@ -5,30 +5,52 @@ Edit TOKEN and Chat_id on you.
 
 Add chrome-wedriver:
  Debian/Ubuntu OS
+```bash
  sudo apt install chromium-driver
-
+```
  Alpine OS
- sudo apk add chromium-chromedriver
+```bash
+sudo apk add chromium-chromedriver
+```
 
  Other OS
  https://chromedriver.chromium.org/
 
-Run console pip3 install -r requirements.txt
+Run console:
+```bash
+pip3 install -r requirements.txt
+```
  
-Change file on executable chmod +x parsing.py
+Change file on executable:
+```bash
+chmod +x parsing.py
+```
 
-Edit crontab -e
+Edit crontab:
+```bash
+crontab -e
+```
 
-Add crontab job */3 * * * * ~/parsing.py >/dev/null 2>&1 
-
+Add crontab job: 
+```bash
+*/3 * * * * ~/parsing.py >/dev/null 2>&1 
+```
+or if need more then one:
+```bash
+*/3 * * * * ~/parsing.py -t [TOKEN] -c [CHAT_ID] -s [KEYSEARCH]>/dev/null 2>&1 
+```
 
 *****
 DOCKER 
 
 Docker build:
 
+```bash
 docker build -t parsing:latest .
+```
+
 
 How to run:
-
+```bash
 docker run -it -v ~/:/data parsing:latest -t token -i chat_id -s сноуборд
+```

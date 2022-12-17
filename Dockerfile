@@ -1,7 +1,7 @@
 FROM python:3.12.0a1-alpine3.16
 RUN apk update && apk add --no-cache chromium-chromedriver git \
 && rm -rf /etc/apk/cache /var/cache/apk/* /tmp/* /var/tmp/* \
-&& git clone -b v1 https://github.com/Kulinych/parsing.git \
+&& git clone -b v1.1 https://github.com/Kulinych/parsing.git \
 && cd parsing && pip3 install -r requirements.txt \
 && apk del git
 
