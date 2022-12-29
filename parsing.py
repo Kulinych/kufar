@@ -22,7 +22,7 @@ def get_photo(link):
     for photo in soup_find_all_photo:
       if photo["src"] not in photo_link:
         photo_link.append(photo["src"])
-    description = soup_photo.find("h2", class_="styles_description__title__H_4cK").next_sibling.text
+    description = soup_photo.find("div", itemprop="description").text
     if len(description) > 870:
       description = description[:867] + "..." 
   except: pass
