@@ -39,7 +39,6 @@ or if need more then one:
 ```bash
 */3 * * * * ~/parsing.py -t [TOKEN] -c [CHAT_ID] -s [KEYSEARCH]>/dev/null 2>&1 
 ```
-
 *****
 DOCKER 
 
@@ -48,7 +47,6 @@ Docker build:
 ```bash
 docker build -t parsing:latest .
 ```
-
 
 How to run:
 ```bash

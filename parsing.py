@@ -52,8 +52,8 @@ def main():
     f = open(keysearch + ".txt", 'r')
     t = f.read()
   
-  link = get_api()[0]
-  file = f'Объявление: {get_api()[1]}, Цена: {get_api()[2]}'
+  link, names, price = get_api()
+  file = f'Объявление: {names}, Цена: {price} '
 
   if get_photo(link) != None: 
     for number, url in enumerate(get_photo(link)[0]):
