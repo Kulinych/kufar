@@ -3,19 +3,6 @@ This script send notice telegram channel when new AD in keysearch on kufar.by
 
 Edit TOKEN and Chat_id on you.  
 
-Add chrome-wedriver:
- Debian/Ubuntu OS
-```bash
- sudo apt install chromium-driver
-```
- Alpine OS
-```bash
-sudo apk add chromium-chromedriver
-```
-
- Other OS
- https://chromedriver.chromium.org/
-
 Run console:
 ```bash
 pip3 install -r requirements.txt
@@ -32,7 +19,7 @@ crontab -e
 ```
 
 Add crontab job: 
-```bash
+```bashе 
 */3 * * * * ~/parsing.py >/dev/null 2>&1 
 ```
 or if need more then one:

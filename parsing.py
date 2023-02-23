@@ -16,7 +16,7 @@ def get_photo(link):
   a = requests.get(link)
   try:
     soup_photo = bs(a.content, "html.parser")
-    soup_find_all_photo = soup_photo.findAll("img", class_="styles_slide__image__lc2v_", limit=9) 
+    soup_find_all_photo = soup_photo.findAll("img", class_="styles_slide__image__FY9R4", limit=9)
     for photo in soup_find_all_photo:
       if photo["src"] not in photo_link:
         photo_link.append(photo["src"])      
