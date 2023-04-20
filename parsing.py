@@ -57,19 +57,18 @@ def main():
     file = f'Объявление: {names}, Цена: {price} '
   #a = requests.get(link)
   #print(a.content)
-    if get_photo(link) != None: 
+    if get_photo(link): 
       for number, url in enumerate(get_photo(link)[0]):
         if number == 0:
           media_group.append(InputMediaPhoto(media=url, parse_mode='HTML', caption=file + "<a href='" + link + "'>Ссылка</a>, Описание: " + get_photo(link)[1]))
         media_group.append(InputMediaPhoto(media=url))
   
-  
-  # Запись в файл для сравнения. отправка сообщения 
+    # Запись в файл для сравнения. отправка сообщения. 
     if t != file:
-        with open(keysearch + ".txt", 'w') as f:
+      with open(keysearch + ".txt", 'w') as f:
           f.write(file)
-          f.close()
-        if len(media_group) != 0:
+      if not (price - 1 < float(t.split('Цена: ')[1]) < price + 1):
+        if len(media_group):
           bot.send_media_group(chat_id=chat_id, media=media_group)  
         else: bot.send_message(text=file + link, chat_id=chat_id)
   except: print('Объявлений не найдено')
