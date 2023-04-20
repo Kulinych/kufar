@@ -67,10 +67,13 @@ def main():
     if t != file:
       with open(keysearch + ".txt", 'w') as f:
           f.write(file)
-      if not (price - 1 < float(t.split('Цена: ')[1]) < price + 1):
-        if len(media_group):
-          bot.send_media_group(chat_id=chat_id, media=media_group)  
-        else: bot.send_message(text=file + link, chat_id=chat_id)
+      if t == '':
+        bot.send_message(text=file + link, chat_id=chat_id)
+      else:
+        if not (price - 1 < float(t.split('Цена: ')[1]) < price + 1):
+          if len(media_group):
+            bot.send_media_group(chat_id=chat_id, media=media_group)  
+          else: bot.send_message(text=file + link, chat_id=chat_id)
   except: print('Объявлений не найдено')
     
 if __name__ == "__main__":
