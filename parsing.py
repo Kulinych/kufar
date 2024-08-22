@@ -4,10 +4,26 @@ import requests
 from argparse import ArgumentParser
 import telegram
 from telegram import InputMediaPhoto
+import sqlite3
+import creat_db
 
-TOKEN = 'token'
+TOKEN = "Token"
 chat_id = "chat_id"
 keysearch = "сноуборд"
+
+con = sqlite3.connect('kufar.db')
+curr = con.cursor()
+url_photo = 'https://rms.kufar.by/v1/gallery/'
+
+def update(data):
+    with con:
+        curr.execute(data)
+
+
+def read(data):
+    with con:
+        curr.execute(data)
+        return curr.fetchone()
 
 
 def get_photo(link):
@@ -30,50 +46,46 @@ def get_photo(link):
 
 def get_api():
     # Запрос к APi и парсинг параметров
+    photo = []
     try:
         response = requests.get(f'https://cre-api-v2.kufar.by/items-search/v1/engine/v1/search/rendered-paginated?lang=ru&query={keysearch}').json()
         for ads in response['ads']:
             link = ads['ad_link']
             names = ads['subject']
+            ad_id = ads['ad_id']
             if int(ads['price_byn']) != 0:
                 price = int(ads['price_byn']) / 100
             else: price = "Договорная"
-        return link, names, price
+            for imgs in ads['images']:
+                photo.append(url_photo + imgs['path'])
+        return link, names, price, ad_id, photo
     except: pass
 
 
 def main():
     media_group = []
-    # Проверка наличия файла (костыль).
-    try: f = open(keysearch + ".txt", 'r')
-    except:
-        f = open(keysearch + ".txt", 'x')
-        f.close()
-    finally:
-        f = open(keysearch + ".txt", 'r')
-        t = f.read()
-    try:
-        link, names, price = get_api()
-        file = f'Объявление: {names}, Цена: {price} '
-    # a = requests.get(link)
-    # print(a.content)
-        if get_photo(link):
-            for number, url in enumerate(get_photo(link)[0]):
-                if number == 0:
-                    media_group.append(InputMediaPhoto(media=url, parse_mode='HTML', caption=file + "<a href='" + link + "'>Ссылка</a>, Описание: " + get_photo(link)[1]))
-                media_group.append(InputMediaPhoto(media=url))
-    # Запись в файл для сравнения. отправка сообщения.
-        if t != file:
-            with open(keysearch + ".txt", 'w') as f:
-                f.write(file)
-            if t == '':
-                bot.send_message(text=file + link, chat_id=chat_id)
-            else:
-                if not ((price - 3 < float(t.split('Цена: ')[1]) < price + 3) or (price - 320 < float(t.split('Цена: ')[1]) < price + 320 and len(t.split('Цена: ')[1]) > 5)):
+    link, names, price, ad_id, photo = get_api()
+    file = f'Объявление: {names}, Цена: {price} '
+    if get_photo(link):
+        for number, url in enumerate(get_photo(link)[0]):
+            if number == 0:
+                media_group.append(InputMediaPhoto(media=url, parse_mode='HTML', caption=file + "<a href='" + link + "'>Ссылка</a>, Описание: " + get_photo(link)[1]))
+            media_group.append(InputMediaPhoto(media=url))
+    if read("SELECT ad_id, price FROM ad WHERE ad_id = %s" % str(ad_id)) is None:
+        update('INSERT INTO ad (ad_id, name, price,  date) VALUES ("%s", "%s", "%s", DATETIME("NOW"))' % (ad_id, names, price))
+        if len(media_group):
+            bot.send_media_group(chat_id=chat_id, media=media_group)
+        else: bot.send_message(text=file + link, chat_id=chat_id)
+    else:
+        r, price_old = read("SELECT ad_id, price FROM ad WHERE ad_id = %s" % str(ad_id))
+        if r:
+            if r == ad_id:
+                print(float(len(str(price_old))))
+                if not ((price - 3 < price_old < price + 3) or (price - 500 < price_old < price + 500 and len(str(price_old)) > 5)):
+                    update("UPDATE ad SET price = %s WHERE ad_id = %s" % (price, ad_id))
                     if len(media_group):
                         bot.send_media_group(chat_id=chat_id, media=media_group)
                     else: bot.send_message(text=file + link, chat_id=chat_id)
-    except: print('Объявлений не найдено')
 
 
 if __name__ == "__main__":

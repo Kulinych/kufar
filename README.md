@@ -39,3 +39,7 @@ How to run:
 ```bash
 docker run -it -v ~/:/data parsing:latest -t token -i chat_id -s сноуборд
 ```
+
+---
+
+## Started Telegram bot [@kufar_mon_bot](https://t.me/kufar_mon_bot?start=git) included this script. 
